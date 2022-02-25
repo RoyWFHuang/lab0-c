@@ -167,7 +167,10 @@ void *test_calloc(size_t nelem, size_t elsize)
     /* Reference: Malloc tutorial
      * https://danluu.com/malloc-tutorial/
      */
-    size_t size = nelem * elsize;  // TODO: check for overflow
+    // size_t size = nelem * elsize;  // TODO: check for overflow
+    size_t size;
+    if (__builtin_mul_overflow(nelem, elsize, &size))
+        return NULL;
     void *ptr = test_malloc(size);
     if (NULL == ptr)
         return NULL;
