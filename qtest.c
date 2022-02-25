@@ -899,6 +899,8 @@ static void console_init()
               NULL);
     add_param("malloc", &fail_probability, "Malloc failure probability percent",
               NULL);
+    add_param("calloc", &fail_probability, "Calloc failure probability percent",
+              NULL);
     add_param("fail", &fail_limit,
               "Number of times allow queue operations to return false", NULL);
 }
