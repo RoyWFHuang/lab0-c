@@ -17,12 +17,13 @@
  */
 struct list_head *q_new()
 {
-    struct list_head *head = malloc(sizeof(struct list_head));
+    // struct list_head *head = malloc(sizeof(struct list_head));
+    // if (NULL == head)
+    //     return NULL;
+    // memset(head, 0, sizeof(struct list_head));
+    struct list_head *head = calloc(1, sizeof(struct list_head));
     if (NULL == head)
         return NULL;
-    memset(head, 0, sizeof(struct list_head));
-    // struct list_head * head = calloc(1, sizeof(struct list_head));
-    // if (NULL == head) return NULL;
     INIT_LIST_HEAD(head);
     return head;
 }
@@ -57,12 +58,12 @@ bool q_insert_head(struct list_head *head, char *s)
     if (NULL == e)
         return false;
     memset(e, 0, sizeof(element_t));
-    e->value = malloc((strlen(s) + 1) * sizeof(char));
+    e->value = calloc(1, (strlen(s) + 1) * sizeof(char));
     if (NULL == e->value) {
         free(e);
         return false;
     }
-    memset(e->value, 0, (strlen(s) + 1) * sizeof(char));
+    // memset(e->value, 0, (strlen(s) + 1) * sizeof(char));
     memcpy(e->value, s, sizeof(char) * strlen(s));
     list_add(&e->list, head);
     return true;
@@ -178,10 +179,10 @@ int q_size(struct list_head *head)
  */
 bool q_delete_mid(struct list_head *head)
 {
-    if (list_is_singular(head)) {
-        list_del(head);
-        q_release_element(container_of(head, element_t, list));
-    }
+    // if (list_is_singular(head)) {
+    //     list_del(head);
+    //     q_release_element(container_of(head, element_t, list));
+    // }
     int tar_len = q_size(head) / 2;
     struct list_head *node = NULL;
     list_for_each (node, head) {
@@ -361,4 +362,3 @@ void q_sort(struct list_head *head)
     head->prev = target;
     target->next = head;
 }
-
