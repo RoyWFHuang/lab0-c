@@ -54,11 +54,10 @@ bool q_insert_head(struct list_head *head, char *s)
 {
     if (NULL == head)
         return false;
-    element_t *e = malloc(sizeof(element_t));
+    element_t *e = calloc(1, sizeof(element_t));
     if (NULL == e)
         return false;
-    memset(e, 0, sizeof(element_t));
-    e->value = calloc(1, (strlen(s) + 1) * sizeof(char));
+    e->value = calloc((strlen(s) + 1), sizeof(char));
     if (NULL == e->value) {
         free(e);
         return false;
@@ -80,16 +79,16 @@ bool q_insert_tail(struct list_head *head, char *s)
 {
     if (NULL == head)
         return false;
-    element_t *e = malloc(sizeof(element_t));
+    element_t *e = calloc(1, sizeof(element_t));
     if (NULL == e)
         return false;
-    memset(e, 0, sizeof(element_t));
-    e->value = malloc((strlen(s) + 1) * sizeof(char));
+    // memset(e, 0, sizeof(element_t));
+    e->value = calloc((strlen(s) + 1), sizeof(char));
     if (NULL == e->value) {
         free(e);
         return false;
     }
-    memset(e->value, 0, (strlen(s) + 1) * sizeof(char));
+    // memset(e->value, 0, (strlen(s) + 1) * sizeof(char));
     memcpy(e->value, s, sizeof(char) * strlen(s));
     list_add_tail(&e->list, head);
     return true;
