@@ -284,7 +284,31 @@ void q_reverse(struct list_head *head)
     }
 }
 
+enum {
+    eCompareInc,
+    eCompareDec,
+    eCompareEq,
+};
 
+#define compare_value(func, v1, v2, compare) (func((v1), (v2)) compare 0)
+#define compare_inc(func, v1, v2) compare_value(func, v1, v2, <)
+#define compare_dec(func, v1, v2) compare_value(func, v1, v2, >)
+#define compare_eq(func, v1, v2) compare_value(func, v1, v2, ==)
+
+#ifndef COMPARE_TPYE
+#pragma message("COMPARE_TPYE should be define")
+#define COMPARE_TPYE eCompareInc
+#endif /* COMPARE_TPYE */
+
+#if COMPARE_TPYE == eCompareInc
+#define compare_func(func, v1, v2) compare_inc(func, v1, v2)
+#elif COMPARE_TPYE == eCompareDec
+#define compare_func(func, v1, v2) compare_dec(func, v1, v2)
+#elif COMPARE_TPYE == eCompareEq
+#define compare_func(func, v1, v2) compare_eq(func, v1, v2)
+#else
+#error COMPARE_TPYE use undefine data type
+#endif /* COMPARE_TPYE == eCompareInc */
 
 static struct list_head *mergeTwoLists(struct list_head *l1,
                                        struct list_head *l2)
@@ -298,8 +322,8 @@ static struct list_head *mergeTwoLists(struct list_head *l1,
         return l1;
 
     struct list_head *ret_list = NULL, *tmp_list;
-    if (strcmp(container_of(l1, element_t, list)->value,
-               container_of(l2, element_t, list)->value) < 0) {
+    if (compare_func(strcmp, container_of(l1, element_t, list)->value,
+                     container_of(l2, element_t, list)->value)) {
         ret_list = l1;
         l1 = l1->next;
     } else {
@@ -308,8 +332,8 @@ static struct list_head *mergeTwoLists(struct list_head *l1,
     }
     tmp_list = ret_list;
     while (l1 && l2) {
-        if (strcmp(container_of(l1, element_t, list)->value,
-                   container_of(l2, element_t, list)->value) < 0) {
+        if (compare_func(strcmp, container_of(l1, element_t, list)->value,
+                         container_of(l2, element_t, list)->value)) {
             tmp_list->next = l1;
             l1 = l1->next;
         } else {
