@@ -296,7 +296,7 @@ enum {
 #define compare_eq(func, v1, v2) compare_value(func, v1, v2, ==)
 
 #ifndef COMPARE_TPYE
-#pragma message("COMPARE_TPYE should be define")
+#pragma message("COMPARE_TPYE should be defined")
 #define COMPARE_TPYE eCompareInc
 #endif /* COMPARE_TPYE */
 
