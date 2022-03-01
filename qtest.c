@@ -647,6 +647,7 @@ static bool do_size(int argc, char *argv[])
     return ok && !error_check();
 }
 
+extern bool timer_alarm;
 bool do_sort(int argc, char *argv[])
 {
     if (argc != 1) {
@@ -670,20 +671,26 @@ bool do_sort(int argc, char *argv[])
     set_noallocate_mode(false);
 
     bool ok = true;
-    if (l_meta.size) {
-        for (struct list_head *cur_l = l_meta.l->next;
-             cur_l != l_meta.l && --cnt; cur_l = cur_l->next) {
-            /* Ensure each element in ascending order */
-            /* FIXME: add an option to specify sorting order */
-            element_t *item, *next_item;
-            item = list_entry(cur_l, element_t, list);
-            next_item = list_entry(cur_l->next, element_t, list);
-            if (strcasecmp(item->value, next_item->value) > 0) {
-                report(1, "ERROR: Not sorted in ascending order");
-                ok = false;
-                break;
+    if (!timer_alarm) {
+        if (l_meta.size) {
+            for (struct list_head *cur_l = l_meta.l->next;
+                 cur_l != l_meta.l && --cnt; cur_l = cur_l->next) {
+                /* Ensure each element in ascending order */
+                /* FIXME: add an option to specify sorting order */
+                element_t *item, *next_item;
+                item = list_entry(cur_l, element_t, list);
+                next_item = list_entry(cur_l->next, element_t, list);
+                if (strcasecmp(item->value, next_item->value) > 0) {
+                    report(1, "ERROR: Not sorted in ascending order");
+                    ok = false;
+                    break;
+                }
             }
         }
+    } else {
+        report(1, "ERROR: time out limit");
+        ok = false;
+        // timer_alarm = false;
     }
 
     show_queue(3);
@@ -886,10 +893,11 @@ static bool queue_quit(int argc, char *argv[])
     report(3, "Freeing queue");
     if (lcnt > big_list_size)
         set_cautious_mode(false);
-
-    if (exception_setup(true))
-        q_free(l_meta.l);
-    exception_cancel();
+    if (!timer_alarm) {
+        if (exception_setup(true))
+            q_free(l_meta.l);
+        exception_cancel();
+    }
     set_cautious_mode(true);
 
     size_t bcnt = allocation_check();
@@ -898,7 +906,6 @@ static bool queue_quit(int argc, char *argv[])
                bcnt);
         return false;
     }
-
     return true;
 }
 

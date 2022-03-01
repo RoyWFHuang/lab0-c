@@ -15,6 +15,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <errno.h>
 #include "report.h"
 
 /* Some global values */
@@ -580,7 +581,9 @@ int cmd_select(int nfds,
             char *cmdline;
             cmdline = readline();
             if (cmdline)
-                interpret_cmd(cmdline);
+                // interpret_cmd(cmdline);
+                if (!interpret_cmd(cmdline))
+                    return -ENOEXEC;
         }
     }
     return result;
@@ -658,7 +661,9 @@ bool run_console(char *infile_name)
         }
     } else {
         while (!cmd_done())
-            cmd_select(0, NULL, NULL, NULL, NULL);
+            if (-1 == cmd_select(0, NULL, NULL, NULL, NULL)) {
+                break;
+            }
     }
 
     return err_cnt == 0;

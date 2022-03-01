@@ -119,6 +119,7 @@ static size_t *find_footer(block_ele_t *b)
     return p;
 }
 
+bool timer_alarm = false;
 /*
  * Implementation of application functions
  */
@@ -280,6 +281,7 @@ bool exception_setup(bool limit_time)
         if (error_message)
             report_event(MSG_ERROR, error_message);
         error_message = "";
+        timer_alarm = true;
         return false;
     }
 
@@ -288,6 +290,7 @@ bool exception_setup(bool limit_time)
     if (limit_time) {
         alarm(time_limit);
         time_limited = true;
+        timer_alarm = false;
     }
     return true;
 }
