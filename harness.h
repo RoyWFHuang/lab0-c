@@ -58,6 +58,8 @@ void exception_cancel();
  */
 void trigger_exception(char *msg);
 
+void exit_free();
+
 #else /* !INTERNAL */
 
 /* Tested program use our versions of malloc and free */

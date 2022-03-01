@@ -325,3 +325,12 @@ void trigger_exception(char *msg)
     else
         exit(1);
 }
+
+void exit_free()
+{
+    for (block_ele_t *head = allocated, *next; head; head = next) {
+        next = head->next;
+        free(head);
+    }
+    allocated_count = 0;
+}

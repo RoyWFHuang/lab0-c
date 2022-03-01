@@ -105,6 +105,8 @@ static bool do_free(int argc, char *argv[])
         report(1, "ERROR: Freed queue, but %lu blocks are still allocated",
                bcnt);
         ok = false;
+        setAtExit();
+        exit_free();
     }
 
     return ok && !error_check();
@@ -904,6 +906,8 @@ static bool queue_quit(int argc, char *argv[])
     if (bcnt > 0) {
         report(1, "ERROR: Freed queue, but %lu blocks are still allocated",
                bcnt);
+        setAtExit();
+        exit_free();
         return false;
     }
     return true;
