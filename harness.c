@@ -126,15 +126,15 @@ void *test_malloc(size_t size)
         report_event(MSG_WARN, "Malloc returning NULL");
         return NULL;
     }
-    sigset_t newmask, oldmask;
-    sigprocmask(SIG_BLOCK, &newmask, &oldmask);
+    // sigset_t newmask, oldmask;
+    // sigprocmask(SIG_BLOCK, &newmask, &oldmask);
 
     block_ele_t *new_block =
         malloc(size + sizeof(block_ele_t) + sizeof(size_t));
     if (!new_block) {
         report_event(MSG_FATAL, "Couldn't allocate any more memory");
         error_occurred = true;
-        sigprocmask(SIG_SETMASK, &oldmask, NULL);
+        // sigprocmask(SIG_SETMASK, &oldmask, NULL);
         return NULL;
     }
 
@@ -154,7 +154,7 @@ void *test_malloc(size_t size)
         allocated->prev = new_block;
     allocated = new_block;
     allocated_count++;
-    sigprocmask(SIG_SETMASK, &oldmask, NULL);
+    // sigprocmask(SIG_SETMASK, &oldmask, NULL);
     return p;
 }
 
